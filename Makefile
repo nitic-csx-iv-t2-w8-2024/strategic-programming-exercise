@@ -1,19 +1,17 @@
-# NOTE: command-line argument
-PRAC = prisoners-dilemma
-
 BIN_DIR = ./bin
 OUT_DIR = ./build
 SRC_DIR = ./src
-PRAC_PATTERN = main
+MAIN_PATTERN = main
 PRAC_DIR = $(SRC_DIR)/$(PRAC)
 INCLUDE_DIR = $(SRC_DIR)
 
+PRAC_LIST = chicken-game prisoners-dilemma
 IGNORE_PATTERN = /_
 
 MAIN = $(PRAC_DIR)/main.c
 PROGRAM = $(PRAC)
 TARGET = $(OUT_DIR)/$(PROGRAM)
-SRCES = $(shell find * -name *.c | grep -v $(IGNORE_PATTERN) | grep -v $(PRAC_PATTERN)) $(MAIN)
+SRCES = $(shell find * -name *.c | grep -v "$(shell echo $(PRAC_LIST) | tr ' ' '\n' | grep -v "$(PRAC)")" | grep -v $(IGNORE_PATTERN)) $(MAIN)
 OBJS = $(addprefix $(OUT_DIR)/, $(subst ./, , $(patsubst %.c, %.o, $(SRCES))))
 DEPENDS = $(OBJS:.o=.d)
 
@@ -34,13 +32,20 @@ build: prepare $(TARGET)
 dev: build start
 
 .PHONY: start
-start:
+start: prepare
 	$(BIN_DIR)/$(PROGRAM) $(ARGS)
 
 .PHONY: prepare
 prepare:
 	@[ -d $(BIN_DIR) ] || mkdir -p $(BIN_DIR)
 	@[ -d $(OUT_DIR) ] || mkdir -p $(OUT_DIR)
+	@if [ -z $(PRAC) ]; then \
+		echo "Error: PRAC '$(PRAC)' is not set. Please set PRAC to one of the following: $(PRAC_LIST)"; \
+		exit 1; \
+	elif [ -z $(shell echo $(PRAC_LIST) | tr ' ' '\n' | grep "$(PRAC)") ]; then \
+		echo "Error: PRAC '$(PRAC)' is not found in PRAC_LIST. Please set PRAC to one of the following: $(PRAC_LIST)"; \
+		exit 1; \
+	fi
 
 .PHONY: clean
 clean:
