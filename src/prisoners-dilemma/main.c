@@ -98,7 +98,7 @@ int p_0(int ID, int n, int SC[2], int *H) {
 }
 
 int p_1(int ID, int n, int SC[2], int *H) {
-  int t = prisoners_dilemma_generous_zd_strategy(ID, n, SC, H);
+  int t = prisoners_dilemma_random_strategy(ID, n, SC, H);
 
   return t;
 }
