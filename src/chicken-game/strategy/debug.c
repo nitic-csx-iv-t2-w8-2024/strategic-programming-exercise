@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include "chicken-game/strategy/strategy.h"
+
 int chicken_game_debug_strategy(int ID, int n, int *H) {
   int t, i;
 

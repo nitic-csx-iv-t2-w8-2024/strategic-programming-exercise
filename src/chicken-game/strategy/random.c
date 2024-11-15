@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#include "chicken-game/strategy/strategy.h"
+
 int chicken_game_random_strategy(int ID, int n, int *H) {
   // NOTE: Ignore unused arguments
   (void)ID;
