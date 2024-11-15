@@ -50,7 +50,7 @@ int main(void) {
   setbuf(stderr, NULL);
 
   // 乱数を使いたい時に備えて初期化
-  // srand((unsigned int)time(NULL)); 毎回変わる乱数
+  // srand((unsigned int)time(NULL));  // 毎回変わる乱数
   srand((unsigned int)19720117L);  // 決まった乱数
   // calloc
   h = (int *)calloc(2 * N, sizeof(int));
