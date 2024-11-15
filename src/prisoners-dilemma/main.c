@@ -50,7 +50,7 @@ int main(void) {
   setbuf(stderr, NULL);
 
   // 乱数を使いたい時に備えて初期化
-  // srand((unsigned int)time(NULL)); 毎回変わる乱数
+  // srand((unsigned int)time(NULL));  // 毎回変わる乱数
   srand((unsigned int)19720117L);  // 決まった乱数
   // calloc
   h = (int *)calloc(2 * N, sizeof(int));
@@ -98,7 +98,7 @@ int p_0(int ID, int n, int SC[2], int *H) {
 }
 
 int p_1(int ID, int n, int SC[2], int *H) {
-  int t = prisoners_dilemma_random_strategy(ID, n, SC, H);
+  int t = prisoners_dilemma_generous_zd_strategy(ID, n, SC, H);
 
   return t;
 }
