@@ -11,7 +11,8 @@ build/
 !.env.example
 
 # log
-log/
+log/*.log
+!log/.gitkeep
 
 # misc
 .DS_Store
