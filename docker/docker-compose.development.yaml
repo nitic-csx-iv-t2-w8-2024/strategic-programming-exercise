@@ -1,6 +1,6 @@
 services:
   app:
-    container_name: app
+    container_name: strategic-programming-exercise-app
     build:
       context: ../
       dockerfile: ./docker/Dockerfile.development
