@@ -3,7 +3,7 @@
 #include "prisoners-dilemma/strategy/strategy.h"
 
 int prisoners_dilemma_generous_zd_strategy(int ID, int n, int SC[2], int *H) {
-  // NOTE: Ignore unused arguments
+  // NOTE: 未使用の引数を無視する
   (void)SC;
 
   // NOTE: 寛容性 (0.0 - 1.0)

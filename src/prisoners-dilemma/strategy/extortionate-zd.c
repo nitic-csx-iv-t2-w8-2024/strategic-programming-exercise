@@ -4,7 +4,7 @@
 
 int prisoners_dilemma_extortionate_zd_strategy(int ID, int n, int SC[2],
                                                int *H) {
-  // NOTE: Ignore unused arguments
+  // NOTE: 未使用の引数を無視する
   (void)SC;
 
   // NOTE: 搾取性 (0.0 - 1.0)
