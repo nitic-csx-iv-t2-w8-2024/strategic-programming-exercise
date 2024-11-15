@@ -26,7 +26,7 @@ VSCodeの拡張機能 [Dev Containers](https://marketplace.visualstudio.com/item
 
 ### 4. build and run
 
-引数 `PRAC` は `/src/*` に存在する演習のディレクトリ名を指定してください。
+引数 `PRAC` は演習のディレクトリ名 (`chicken-game` または `prisoners-dilemma`) を指定してください。
 `make dev` でビルドと実行を同時に行うことができます。
 
 ```bash

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-int random_strategy(int ID, int n, int SC[2], int *H) {
+int prisoners_dilemma_random_strategy(int ID, int n, int SC[2], int *H) {
   // NOTE: Ignore unused arguments
   (void)n;
   (void)SC;
