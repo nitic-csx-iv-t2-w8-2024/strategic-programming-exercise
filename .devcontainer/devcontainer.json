@@ -1,0 +1,17 @@
+{
+  "name": "strategic-programming-exercise",
+  "workspaceFolder": "/workspaces/strategic-programming-exercise/",
+  "dockerComposeFile": ["../docker/docker-compose.development.yaml"],
+  "service": "app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "editorconfig.editorconfig",
+        "ms-vscode.cpptools",
+        "ms-vscode.makefile-tools",
+        "esbenp.prettier-vscode",
+        "visualstudioexptteam.vscodeintellic"
+      ]
+    }
+  }
+}
