@@ -13,64 +13,22 @@ Strategic Programming Exercise の開発環境を Dev Containers で簡単に立
 ### 1. clone git repository
 
 ```bash
-git clone "https://github.com/ikihaji/ikihaji-tube" && cd "./ikihaji-tube"
+git clone "https://github.com/nitic-csx-iv-t2-w8-2024/strategic-programming-exercise" && cd "./strategic-programming-exercise"
 ```
 
 ### 2. set environment variables
 
 `.env.example` ファイルをコピーして `.env` ファイルを作成し、環境変数を設定してください。  
-環境変数の詳細は[リポジトリ所有者](https://github.com/dino3616)に連絡してください。
 
 ### 3. launch container
 
 VSCodeの拡張機能 [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) を使用してコンテナを起動してください。
 
-### 4. install dependencies
+### 4. build and run
+
+引数 `PRAC` は `/src/*` に存在する演習のディレクトリ名を指定してください。
+`make dev` でビルドと実行を同時に行うことができます。
 
 ```bash
-bun install
-```
-
-### 5. start development server
-
-```bash
-bun turbo run dev
-```
-
-## Setup locally 🖥️
-
-IkihajiTube の開発環境をローカルで立ち上げる場合は以下の手順に従ってください。
-
-### Attention
-
-- 事前に [proto](https://moonrepo.dev/docs/proto/install) をインストールしておく必要があります。
-- [Optional] 事前に [`.devcontainer/devcontainer.json`](./.devcontainer/devcontainer.json#L8C7-L8C112) に記載されている拡張機能をインストールしておくことを推奨します。
-
-### 1. clone git repository
-
-```bash
-git clone "https://github.com/ikihaji/ikihaji-tube" && cd "./ikihaji-tube"
-```
-
-### 2. set environment variables
-
-`.env.example` ファイルをコピーして `.env` ファイルを作成し、環境変数を設定してください。  
-環境変数の詳細は[リポジトリ所有者](https://github.com/dino3616)に連絡してください。
-
-### 3. install package manager
-
-```bash
-proto use
-```
-
-### 4. install dependencies
-
-```bash
-bun install
-```
-
-### 5. start development server
-
-```bash
-bun turbo run dev
+make dev PRAC=prisoners-dilemma
 ```
