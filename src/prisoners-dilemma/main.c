@@ -6,99 +6,90 @@
 #include <unistd.h>
 
 #include "prisoners-dilemma/strategy/strategy.h"
+#include "util/log.h"
 
-/* マクロで文字列化する */
-#define FNAME(str) F_NAME(str)
-#define F_NAME(str) #str
-#define N 50         /* 試行回数 */
-#define OID (id ^ 1) /* 相手の id */
-/* ここを関数名に書き換える */
-#define ID_00 p_0
-#define ID_01 p_1
-/*
-int sct[2][2]:点数表
+#define ATTEMPT_LIMIT 50
 
-自分 相手
-[0][0]: 協調 協調
-[0][1]: 協調 裏切り
-[1][0]: 裏切り 協調
-[1][1]: 裏切り 裏切り
-int *h:過去の手
-*(h+2*i+ID):i 回目の ID の手
-int sc[2]:点数
-sc[ID]:ID の点
-*/
-/*
-次の手を計算する関数のプロトタイプ宣言
-名前は何でもよい。引数も必要に応じて変えること
-この例では
-自分の ID、今何回目か、現在までの点数、過去の手の配列
-を渡している。
-*/
-int ID_00(int ID, int n, int SC[2], int *H); /*プレイヤー ID 0の関数*/
-int ID_01(int ID, int n, int SC[2], int *H); /*プレイヤー ID 1の関数*/
-const char *name[] = {FNAME(ID_00), FNAME(ID_01)};
-const int SCT[2][2] = {{5, 0}, {10, 2}}; /*点数表*/
+int player0_policy(int self_id, int attempt, int overall_scores[2],
+                   int *trajectory);
+int player1_policy(int self_id, int attempt, int overall_scores[2],
+                   int *trajectory);
+
 int main(void) {
-  int i = 0, ii = 1, j, k, rh[2];
-  int *h;  // int h[2][N];
-  int sc[2] = {0, 0};
-  FILE *LOG;
-  char LOG_File[100];
-  int (*player[])(int, int, int[2], int *) = {ID_00, ID_01};
-  int (*play[2])(int, int, int[2], int *);
-  setbuf(stderr, NULL);
+  char log_file_path[64];
+  sprintf(log_file_path, "./log/prisoners-dilemma-%ld.log", time(NULL));
+  FILE *log_file = fopen(log_file_path, "w");
 
-  // 乱数を使いたい時に備えて初期化
-  // srand((unsigned int)time(NULL));  // 毎回変わる乱数
-  srand((unsigned int)19720117L);  // 決まった乱数
-  // calloc
-  h = (int *)calloc(2 * N, sizeof(int));
-  /////////////////////////////////////////
-  sprintf(LOG_File, "./log/LOG_%s_%s.log", name[0], name[1]);
-  LOG = fopen(LOG_File, "w");
-  play[0] = player[0];
-  play[1] = player[1];
-  for (k = 0; k < 2; k++) {
-    sc[k] = 0;
+  // // NOTE: 時間依存の動的な乱数を生成するためのシード設定
+  // srand((unsigned int)time(NULL));
+  // NOTE: 定数依存の静的な乱数を生成するためのシード設定
+  srand((unsigned int)19720117L);
+
+  const int reward_table[2][2] = {{5, 0}, {10, 2}};
+  int (*action_determiner[])(int, int, int[2], int *) = {player0_policy,
+                                                         player1_policy};
+
+  int overall_scores[2] = {0, 0};
+  int *trajectory = (int *)calloc(2 * ATTEMPT_LIMIT, sizeof(int));
+  if (trajectory == NULL) {
+    log_error("Failed to allocate memory.");
+
+    return EXIT_FAILURE;
   }
-  for (j = 0; j < N; j++) {
-    for (k = 0; k < 2; k++) {
-      rh[k] = (*play[k])(k, j, sc, h);
+
+  for (int attempt = 0; attempt < ATTEMPT_LIMIT; attempt++) {
+    int determined_actions[2];
+    for (int i = 0; i < 2; i++) {
+      determined_actions[i] =
+          (*action_determiner[i])(i, attempt, overall_scores, trajectory);
     }
-    for (k = 0; k < 2; k++) {
-      *(h + (2 * j) + k) = rh[k];
-      sc[k] += SCT[rh[k]][rh[k ^ 1]];
+    for (int i = 0; i < 2; i++) {
+      *(trajectory + (2 * attempt) + i) = determined_actions[i];
+      overall_scores[i] +=
+          reward_table[determined_actions[i]][determined_actions[i ^ 1]];
     }
-    fprintf(LOG, "Turn %3d,h: %d %d, sc:%3d %3d,total: %3d %3d\n", j + 1,
-            *(h + (2 * j)), *(h + (2 * j) + 1),
-            SCT[*(h + (2 * j))][*(h + (2 * j) + 1)],
-            SCT[*(h + (2 * j) + 1)][*(h + (2 * j))], sc[0], sc[1]);
+
+    fprintf(
+        log_file,
+        "turn %3d, action: %d %d, reward: %3d %3d, overall score: %3d %3d\n",
+        attempt + 1, *(trajectory + (2 * attempt)),
+        *(trajectory + (2 * attempt) + 1),
+        reward_table[*(trajectory + (2 * attempt))]
+                    [*(trajectory + (2 * attempt) + 1)],
+        reward_table[*(trajectory + (2 * attempt) + 1)]
+                    [*(trajectory + (2 * attempt))],
+        overall_scores[0], overall_scores[1]);
   }
-  fprintf(LOG, " %s : %s .\n", name[i], name[ii]);
-  fprintf(LOG, "score %d : %d . %d\n", sc[0], sc[1], sc[0] + sc[1]);
-  printf(" %s : %s .\n", name[i], name[ii]);
-  printf("score %d : %d . %d\n", sc[0], sc[1], sc[0] + sc[1]);
-  fclose(LOG);
-  fprintf(stderr, "\n THE END\n");
-  /////////////////////////////////////////
-  free(h);
-  return 0;
+
+  free(trajectory);
+
+  fprintf(log_file, "\n");
+  fprintf(log_file, "Player1 Overall Score: %d\n", overall_scores[0]);
+  fprintf(log_file, "Player2 Overall Score: %d\n", overall_scores[1]);
+  fprintf(log_file, "Sum of Overall Scores: %d\n",
+          overall_scores[0] + overall_scores[1]);
+
+  fclose(log_file);
+
+  log_info("Player1 Overall Score: %d", overall_scores[0]);
+  log_info("Player2 Overall Score: %d", overall_scores[1]);
+  log_info("Sum of Overall Scores: %d", overall_scores[0] + overall_scores[1]);
+
+  return EXIT_SUCCESS;
 }
 
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-/* 提出するのは以下の部分にある関数部分(どちらか1つ) */
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-int p_0(int ID, int n, int SC[2], int *H) {
-  int t = prisoners_dilemma_random_strategy(ID, n, SC, H);
+int player0_policy(int self_id, int attempt, int overall_scores[2],
+                   int *trajectory) {
+  int action = prisoners_dilemma_random_strategy(self_id, attempt,
+                                                 overall_scores, trajectory);
 
-  return t;
+  return action;
 }
 
-int p_1(int ID, int n, int SC[2], int *H) {
-  int t = prisoners_dilemma_random_strategy(ID, n, SC, H);
+int player1_policy(int self_id, int attempt, int overall_scores[2],
+                   int *trajectory) {
+  int action = prisoners_dilemma_random_strategy(self_id, attempt,
+                                                 overall_scores, trajectory);
 
-  return t;
+  return action;
 }
