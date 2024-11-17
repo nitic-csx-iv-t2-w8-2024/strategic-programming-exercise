@@ -2,10 +2,11 @@
 
 #include "prisoners-dilemma/strategy/strategy.h"
 
-int prisoners_dilemma_random_strategy(int self_id, int attempt,
-                                      int overall_scores[2], int *trajectory) {
+int random_strategy(int self_id, int reward_table[2][2], int attempt,
+                    int overall_scores[2], int *trajectory) {
   // NOTE: 未使用の引数を無視する
   (void)self_id;
+  (void)reward_table;
   (void)attempt;
   (void)overall_scores;
   (void)trajectory;
