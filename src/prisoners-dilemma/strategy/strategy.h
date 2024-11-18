@@ -7,19 +7,7 @@ extern int equalizer_zd_strategy(int self_id, int reward_table[2][2],
 extern int extortionate_zd_strategy(int self_id, int reward_table[2][2],
                                     int attempt, int overall_scores[2],
                                     int *trajectory);
-extern int generous_zd_strategy(int self_id, int reward_table[2][2],
-                                int attempt, int overall_scores[2],
-                                int *trajectory);
-extern int genetic_algorithm_strategy(int self_id, int reward_table[2][2],
-                                      int attempt, int overall_scores[2],
-                                      int *trajectory);
-extern int grim_trigger_strategy(int self_id, int reward_table[2][2],
-                                 int attempt, int overall_scores[2],
-                                 int *trajectory);
 extern int random_strategy(int self_id, int reward_table[2][2], int attempt,
                            int overall_scores[2], int *trajectory);
-extern int tit_for_tat_strategy(int self_id, int reward_table[2][2],
-                                int attempt, int overall_scores[2],
-                                int *trajectory);
 
 #endif
