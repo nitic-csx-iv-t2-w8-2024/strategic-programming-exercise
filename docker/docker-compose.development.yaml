@@ -1,3 +1,4 @@
+name: strategic-programming-exercise
 services:
   app:
     container_name: strategic-programming-exercise-app
