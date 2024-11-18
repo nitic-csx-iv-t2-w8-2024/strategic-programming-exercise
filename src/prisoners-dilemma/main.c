@@ -1,19 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
 #include <time.h>
-#include <unistd.h>
 
 #include "prisoners-dilemma/strategy/strategy.h"
 #include "util/log.h"
 
 #define ATTEMPT_LIMIT 50
 
-int player0_policy(int self_id, int attempt, int overall_scores[2],
-                   int *trajectory);
-int player1_policy(int self_id, int attempt, int overall_scores[2],
-                   int *trajectory);
+int player0_policy(int self_id, int reward_table[2][2], int attempt,
+                   int overall_scores[2], int *trajectory);
+int player1_policy(int self_id, int reward_table[2][2], int attempt,
+                   int overall_scores[2], int *trajectory);
 
 int main(void) {
   char log_file_path[64];
@@ -25,9 +22,9 @@ int main(void) {
   // NOTE: 定数依存の静的な乱数を生成するためのシード設定
   srand((unsigned int)19720117L);
 
-  const int reward_table[2][2] = {{5, 0}, {10, 2}};
-  int (*action_determiner[])(int, int, int[2], int *) = {player0_policy,
-                                                         player1_policy};
+  int reward_table[2][2] = {{5, 0}, {10, 2}};
+  int (*action_determiner[])(int, int[2][2], int, int[2], int *) = {
+      player0_policy, player1_policy};
 
   int overall_scores[2] = {0, 0};
   int *trajectory = (int *)calloc(2 * ATTEMPT_LIMIT, sizeof(int));
@@ -40,8 +37,8 @@ int main(void) {
   for (int attempt = 0; attempt < ATTEMPT_LIMIT; attempt++) {
     int determined_actions[2];
     for (int i = 0; i < 2; i++) {
-      determined_actions[i] =
-          (*action_determiner[i])(i, attempt, overall_scores, trajectory);
+      determined_actions[i] = (*action_determiner[i])(
+          i, reward_table, attempt, overall_scores, trajectory);
     }
     for (int i = 0; i < 2; i++) {
       *(trajectory + (2 * attempt) + i) = determined_actions[i];
@@ -78,18 +75,18 @@ int main(void) {
   return EXIT_SUCCESS;
 }
 
-int player0_policy(int self_id, int attempt, int overall_scores[2],
-                   int *trajectory) {
-  int action = prisoners_dilemma_random_strategy(self_id, attempt,
-                                                 overall_scores, trajectory);
+int player0_policy(int self_id, int reward_table[2][2], int attempt,
+                   int overall_scores[2], int *trajectory) {
+  int action = random_strategy(self_id, reward_table, attempt, overall_scores,
+                               trajectory);
 
   return action;
 }
 
-int player1_policy(int self_id, int attempt, int overall_scores[2],
-                   int *trajectory) {
-  int action = prisoners_dilemma_random_strategy(self_id, attempt,
-                                                 overall_scores, trajectory);
+int player1_policy(int self_id, int reward_table[2][2], int attempt,
+                   int overall_scores[2], int *trajectory) {
+  int action = random_strategy(self_id, reward_table, attempt, overall_scores,
+                               trajectory);
 
   return action;
 }
