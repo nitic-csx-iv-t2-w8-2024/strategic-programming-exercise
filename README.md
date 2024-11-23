@@ -16,15 +16,11 @@ Strategic Programming Exercise の開発環境を Dev Containers で簡単に立
 git clone "https://github.com/nitic-csx-iv-t2-w8-2024/strategic-programming-exercise" && cd "./strategic-programming-exercise"
 ```
 
-### 2. set environment variables
-
-`.env.example` ファイルをコピーして `.env` ファイルを作成し、環境変数を設定してください。  
-
-### 3. launch container
+### 2. launch container
 
 VSCodeの拡張機能 [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) を使用してコンテナを起動してください。
 
-### 4. build and run
+### 3. build and run
 
 引数 `PRAC` は演習のディレクトリ名 (`chicken-game` または `prisoners-dilemma`) を指定してください。  
 `make dev` でビルドと実行を同時に行うことができます。
